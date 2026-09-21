@@ -144,7 +144,7 @@ if __name__ == "__main__":
     print(f"Categories: {df['category'].nunique()}")
 
     df.to_csv(
-        "data_pipeline/outputs/scraped_data.csv",
+        "data_pipeline/data/scraped_data.csv",
         index=False, encoding="utf-8"
     )
 
