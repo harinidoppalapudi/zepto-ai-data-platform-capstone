@@ -84,7 +84,7 @@ def clean_books(df):
 if __name__ == "__main__":
 
     # Read scraped CSV
-    df = pd.read_csv("data_pipeline/outputs/scraped_data.csv")
+    df = pd.read_csv("data_pipeline/data/scraped_data.csv")
 
     # Clean data
     cleaned_df = clean_books(df)

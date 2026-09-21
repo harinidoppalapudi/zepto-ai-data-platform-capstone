@@ -1,12 +1,8 @@
 import pandas as pd
 import sqlite3
-
 import os
 
-
-# ============================================================
 # SQL QUERIES
-# ============================================================
 
 QUERIES = {
 
@@ -55,7 +51,7 @@ QUERIES = {
 # CONNECT TO SQLITE DATABASE
 
 connection = sqlite3.connect(
-    "data_pipeline/zepto_books.db"
+    "data_pipeline/database/zepto_books.db"
 )
 
 # QUERY 1 — EXPENSIVE BOOKS
