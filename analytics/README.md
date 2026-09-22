@@ -85,7 +85,11 @@ fitted only on training data.
 
 ## Model Artifact
 
-The final fitted pipeline is saved as:
+The final selected classifier is Logistic Regression based on the
+observed test-set evaluation metrics.
+
+The complete fitted Logistic Regression pipeline, including preprocessing,
+is saved as:
 
 `models/best_pipeline.joblib`
 
