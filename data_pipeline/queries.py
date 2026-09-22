@@ -47,174 +47,179 @@ QUERIES = {
     """
 }
 
+def run_queries():
+    # CONNECT TO SQLITE DATABASE
 
-# CONNECT TO SQLITE DATABASE
+    connection = sqlite3.connect(
+        "data_pipeline/database/zepto_books.db"
+    )
 
-connection = sqlite3.connect(
-    "data_pipeline/database/zepto_books.db"
-)
+    # QUERY 1 — EXPENSIVE BOOKS
 
-# QUERY 1 — EXPENSIVE BOOKS
+    print("\n" + "=" * 70)
+    print("QUERY 1: BOOKS WITH PRICE GREATER THAN £30")
+    print("=" * 70)
 
-print("\n" + "=" * 70)
-print("QUERY 1: BOOKS WITH PRICE GREATER THAN £30")
-print("=" * 70)
+    result1 = pd.read_sql(
+        QUERIES["expensive_books"],
+        connection
+    )
 
-result1 = pd.read_sql(
-    QUERIES["expensive_books"],
-    connection
-)
-
-print(result1)
-
-
-# QUERY 2 — TOP 10 MOST EXPENSIVE BOOKS
-
-print("\n" + "=" * 70)
-print("QUERY 2: TOP 10 MOST EXPENSIVE BOOKS")
-print("=" * 70)
-
-result2 = pd.read_sql(
-    QUERIES["top_books"],
-    connection
-)
-
-print(result2)
+    print(result1)
 
 
-# QUERY 3 — DISTINCT CATEGORIES
+    # QUERY 2 — TOP 10 MOST EXPENSIVE BOOKS
 
-print("\n" + "=" * 70)
-print("QUERY 3: ALL CATEGORIES")
-print("=" * 70)
+    print("\n" + "=" * 70)
+    print("QUERY 2: TOP 10 MOST EXPENSIVE BOOKS")
+    print("=" * 70)
 
-result3 = pd.read_sql(
-    QUERIES["categories"],
-    connection
-)
+    result2 = pd.read_sql(
+        QUERIES["top_books"],
+        connection
+    )
 
-print(result3)
-
-
-# QUERY 4 — BOOKS BETWEEN £20 AND £40
-
-print("\n" + "=" * 70)
-print("QUERY 4: BOOKS BETWEEN £20 AND £40")
-print("=" * 70)
-
-result4 = pd.read_sql(
-    QUERIES["price_range"],
-    connection
-)
-
-print(result4)
+    print(result2)
 
 
-# QUERY 5 — JOIN BOOKS WITH CATEGORIES
+    # QUERY 3 — DISTINCT CATEGORIES
 
-print("\n" + "=" * 70)
-print("QUERY 5: BOOKS WITH THEIR CATEGORIES - JOIN")
-print("=" * 70)
+    print("\n" + "=" * 70)
+    print("QUERY 3: ALL CATEGORIES")
+    print("=" * 70)
 
-result5 = pd.read_sql(
-    QUERIES["books_with_categories"],
-    connection
-)
+    result3 = pd.read_sql(
+        QUERIES["categories"],
+        connection
+    )
 
-print(result5)
-
-# PANDAS MERGE
-
-print("\n" + "=" * 70)
-print("PANDAS MERGE: BOOKS + CATEGORIES")
-print("=" * 70)
-
-books_df = pd.read_sql(
-    "SELECT * FROM books",
-    connection
-)
-
-categories_df = pd.read_sql(
-    "SELECT * FROM categories",
-    connection
-)
-
-merged = pd.merge(
-    books_df,
-    categories_df,
-    on="category_id",
-    how="inner"
-)
-
-print(merged)
+    print(result3)
 
 
-# VERIFY SQL JOIN AND PANDAS MERGE MATCH
+    # QUERY 4 — BOOKS BETWEEN £20 AND £40
 
-sql_join_compare = result5[
-    ["title", "rating", "price_inr", "category_name"]
-].sort_values(
-    by=["title", "category_name"]
-).reset_index(drop=True)
+    print("\n" + "=" * 70)
+    print("QUERY 4: BOOKS BETWEEN £20 AND £40")
+    print("=" * 70)
 
-pandas_merge_compare = merged[
-    ["title", "rating", "price_inr", "category_name"]
-].sort_values(
-    by=["title", "category_name"]
-).reset_index(drop=True)
+    result4 = pd.read_sql(
+        QUERIES["price_range"],
+        connection
+    )
 
-print("\n" + "=" * 70)
-print("SQL JOIN vs PANDAS MERGE")
-print("=" * 70)
-
-print(
-    "Do SQL JOIN and Pandas merge match:",
-    sql_join_compare.equals(pandas_merge_compare)
-)
+    print(result4)
 
 
-# SAVE QUERY RESULTS
-output_folder = "data_pipeline/outputs/query_results"
+    # QUERY 5 — JOIN BOOKS WITH CATEGORIES
 
-os.makedirs(output_folder, exist_ok=True)
+    print("\n" + "=" * 70)
+    print("QUERY 5: BOOKS WITH THEIR CATEGORIES - JOIN")
+    print("=" * 70)
 
-result1.to_csv(
-    f"{output_folder}/expensive_books.csv",
-    index=False
-)
+    result5 = pd.read_sql(
+        QUERIES["books_with_categories"],
+        connection
+    )
 
-result2.to_csv(
-    f"{output_folder}/top_books.csv",
-    index=False
-)
+    print(result5)
 
-result3.to_csv(
-    f"{output_folder}/categories.csv",
-    index=False
-)
+    # PANDAS MERGE
 
-result4.to_csv(
-    f"{output_folder}/price_range.csv",
-    index=False
-)
+    print("\n" + "=" * 70)
+    print("PANDAS MERGE: BOOKS + CATEGORIES")
+    print("=" * 70)
 
-result5.to_csv(
-    f"{output_folder}/books_with_categories.csv",
-    index=False
-)
+    books_df = pd.read_sql(
+        "SELECT * FROM books",
+        connection
+    )
 
-merged.to_csv(
-    f"{output_folder}/pandas_merge.csv",
-    index=False
-)
+    categories_df = pd.read_sql(
+        "SELECT * FROM categories",
+        connection
+    )
 
-print("\nQuery results saved successfully.")
+    merged = pd.merge(
+        books_df,
+        categories_df,
+        on="category_id",
+        how="inner"
+    )
+
+    print(merged)
 
 
-# CLOSE DATABASE CONNECTION
+    # VERIFY SQL JOIN AND PANDAS MERGE MATCH
 
-connection.close()
+    sql_join_compare = result5[
+        ["title", "rating", "price_inr", "category_name"]
+    ].sort_values(
+        by=["title", "category_name"]
+    ).reset_index(drop=True)
 
-print("\n" + "=" * 70)
-print("ALL 5 SQL QUERIES EXECUTED SUCCESSFULLY")
-print("=" * 70)
+    pandas_merge_compare = merged[
+        ["title", "rating", "price_inr", "category_name"]
+    ].sort_values(
+        by=["title", "category_name"]
+    ).reset_index(drop=True)
+
+    print("\n" + "=" * 70)
+    print("SQL JOIN vs PANDAS MERGE")
+    print("=" * 70)
+
+    print(
+        "Do SQL JOIN and Pandas merge match:",
+        sql_join_compare.equals(pandas_merge_compare)
+    )
+
+
+    # SAVE QUERY RESULTS
+    output_folder = "data_pipeline/outputs/query_results"
+
+    os.makedirs(output_folder, exist_ok=True)
+
+    result1.to_csv(
+        f"{output_folder}/expensive_books.csv",
+        index=False
+    )
+
+    result2.to_csv(
+        f"{output_folder}/top_books.csv",
+        index=False
+    )
+
+    result3.to_csv(
+        f"{output_folder}/categories.csv",
+        index=False
+    )
+
+    result4.to_csv(
+        f"{output_folder}/price_range.csv",
+        index=False
+    )
+
+    result5.to_csv(
+        f"{output_folder}/books_with_categories.csv",
+        index=False
+    )
+
+    merged.to_csv(
+        f"{output_folder}/pandas_merge.csv",
+        index=False
+    )
+
+    print("\nQuery results saved successfully.")
+
+
+    # CLOSE DATABASE CONNECTION
+
+    connection.close()
+
+    print("\n" + "=" * 70)
+    print("ALL 5 SQL QUERIES EXECUTED SUCCESSFULLY")
+    print("=" * 70)
+
+
+# ALLOW queries.py TO ALSO RUN DIRECTLY
+if __name__ == "__main__":
+    run_queries()

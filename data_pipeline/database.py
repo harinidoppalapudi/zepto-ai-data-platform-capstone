@@ -6,8 +6,10 @@ DB_PATH = "data_pipeline/database/zepto_books.db"
 
 def create_database():
     connection = sqlite3.connect(DB_PATH)
-
     cursor = connection.cursor()
+
+    cursor.execute("DROP TABLE IF EXISTS books")
+    cursor.execute("DROP TABLE IF EXISTS categories")
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS categories (
