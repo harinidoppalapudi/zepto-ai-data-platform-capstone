@@ -1,6 +1,7 @@
 from scraper import scrape_books
 from cleaning import clean_books
 from database import create_database, insert_data
+from queries import run_queries
 
 
 # Scrape
@@ -38,7 +39,7 @@ print("\n--- CATEGORY COUNTS ---")
 print(df["category"].value_counts())
 
 
-#Database
+#Database storage
 
 print("\n" + "=" * 70)
 print("STEP 4: DATABASE STORAGE")
@@ -51,3 +52,15 @@ insert_data(connection, df)
 connection.close()
 
 print("Data successfully stored in SQLite database.")
+
+
+#SQL QUERIES AND PANDAS VALIDATION
+print("\n" + "=" * 70)
+print("STEP 5: SQL QUERIES AND PANDAS VALIDATION")
+print("=" * 70)
+run_queries()
+
+# PIPELINE COMPLETE
+print("\n" + "=" * 70)
+print("COMPLETE MODULE 1 PIPELINE FINISHED SUCCESSFULLY")
+print("=" * 70)
