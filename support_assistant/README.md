@@ -570,6 +570,14 @@ After running the application, paste the actual JSON response here:
   "confidence": 1.0
 }
 
+{
+    "answer": "Based on the retrieved context: Zepto delivers grocery and household essentials to serviceable pin codes within 10 to 30 minutes of order confirmation, depending on the customer's delivery zone and current order volume Standard del",
+    "sources":[
+        "doc_01_chunk_01","doc_02_chunk_01","doc_05_chunk_01"
+    ],
+    "confidence":1.0
+} 
+
 Do not leave the placeholder text in the final submission.
 
 The assignment specifically requires the raw JSON responses from the example calls to be recorded in the README.
@@ -586,9 +594,9 @@ Actual response
 After running the application, paste the actual JSON response here:
 
 {
-  "answer": "PASTE ACTUAL RESPONSE HERE",
-  "sources": [],
-  "confidence": 1.0
+  "answer":"I can only answer questions about Zepto policies right now.",
+  "sources":[],
+  "confidence":1.0
 }
 
 Expected answer text in mock mode:
@@ -674,6 +682,8 @@ And:
 curl -X POST "http://127.0.0.1:8000/ask" \
   -H "Content-Type: application/json" \
   -d '{"query":"What is the capital of France?"}'
+
+
 23. Files and Responsibilities
 File	Responsibility
 config.py	Paths, model name, ChromaDB configuration, mock mode

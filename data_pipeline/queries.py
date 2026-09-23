@@ -163,12 +163,27 @@ def run_queries():
         by=["title", "category_name"]
     ).reset_index(drop=True)
 
+
     print("\n" + "=" * 70)
-    print("SQL JOIN vs PANDAS MERGE")
+    print("SQL JOIN vs PANDAS MERGE - SIDE BY SIDE")
     print("=" * 70)
 
+    comparison = pd.DataFrame({
+        "SQL_TITLE": sql_join_compare["title"].values,
+        "SQL_RATING": sql_join_compare["rating"].values,
+        "SQL_PRICE_INR": sql_join_compare["price_inr"].values,
+        "SQL_CATEGORY": sql_join_compare["category_name"].values,
+
+        "PANDAS_TITLE": pandas_merge_compare["title"].values,
+        "PANDAS_RATING": pandas_merge_compare["rating"].values,
+        "PANDAS_PRICE_INR": pandas_merge_compare["price_inr"].values,
+        "PANDAS_CATEGORY": pandas_merge_compare["category_name"].values
+    })
+
+    print(comparison)
+
     print(
-        "Do SQL JOIN and Pandas merge match:",
+        "\nEquivalent:",
         sql_join_compare.equals(pandas_merge_compare)
     )
 

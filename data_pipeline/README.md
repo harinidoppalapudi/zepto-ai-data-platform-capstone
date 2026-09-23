@@ -173,4 +173,11 @@ The pipeline will:
 5. Load the data into SQLite.
 6. Execute the SQL queries.
 7. Validate the SQL JOIN using Pandas merge.
-8. Save the query results to `data_pipeline/outputs/query_results/`.
+8. Save the query results to 
+`data_pipeline/outputs/query_results/`
+    `data_pipeline/outputs/query_results/books_with_categories.csv`
+    `data_pipeline/outputs/query_results/categories.csv`
+    `data_pipeline/outputs/query_results/expensive_books.csv`
+    `data_pipeline/outputs/query_results/pandas_merge.csv`
+    `data_pipeline/outputs/query_results/price_range.csv`
+    `data_pipeline/outputs/query_results/top_books.csv`.
