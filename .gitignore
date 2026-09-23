@@ -11,10 +11,13 @@ __pycache__/
 
 # Jupyter Notebook
 .ipynb_checkpoints/
+.env
 
 # Environment variables / secrets
 .env
 .env.*
+venv/
+env/
 
 # macOS
 .DS_Store
@@ -44,4 +47,13 @@ dist/
 htmlcov/
 
 # Logs
-*.logsupport_assistant/chroma_db/
+*.log
+
+# Module 3 ChromaDB
+support_assistant/chroma_db/
+
+# Local ML model cache
+support_assistant/.cache/
+
+.DS_Store
+Thumbs.db

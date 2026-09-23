@@ -1,3 +1,8 @@
+import os
+
+os.environ["HF_HUB_DISABLE_IMPLICIT_TOKEN"] = "1"
+os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+
 from pathlib import Path
 from typing import List, Dict
 
@@ -14,7 +19,15 @@ from config import (
 
 class PolicyIndexer:
     def __init__(self):
-        self.model = SentenceTransformer(EMBEDDING_MODEL_NAME)
+        import contextlib
+        import io
+
+        # Suppress Hugging Face Hub startup messages
+        with (
+            contextlib.redirect_stdout(io.StringIO()),
+            contextlib.redirect_stderr(io.StringIO()),
+        ):
+            self.model = SentenceTransformer(EMBEDDING_MODEL_NAME)
 
         self.client = chromadb.PersistentClient(
             path=str(CHROMA_DIR)
