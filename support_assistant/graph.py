@@ -8,6 +8,7 @@ from config import MOCK_LLM, TOP_K
 from ingestion import PolicyIndexer
 from prompts import PROMPT_TEMPLATE
 from schemas import AskResponse
+from langchain_groq import ChatGroq 
 
 
 class GraphState(TypedDict, total=False):
