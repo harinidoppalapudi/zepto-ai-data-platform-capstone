@@ -351,7 +351,7 @@ automatically builds the ChromaDB index.
 
 The reproducible workflow is:
 
-python ingestion.py
+python build_index.py
         ↓
 ChromaDB index created/populated
         ↓
@@ -619,10 +619,9 @@ This query should trigger retrieval:
 curl -X POST "http://127.0.0.1:8000/ask" \
   -H "Content-Type: application/json" \
   -d '{"query":"What is the delivery policy?"}'
+
+
 Raw JSON response
-
-Paste the actual response produced by your application here:
-
 {
     "answer":"Based on the retrieved context: Zepto delivers grocery and household essentials to serviceable pin codes within 10 to 30 minutes of order confirmation, depending on the customer's delivery zone and current order volume. Standard del",
     "sources":[
@@ -646,8 +645,6 @@ curl -X POST "http://127.0.0.1:8000/ask" \
   -H "Content-Type: application/json" \
   -d '{"query":"What is the capital of France?"}'
 Raw JSON response
-
-Paste the actual response produced by your application here:
 
 {
   "answer": "I can only answer questions about Zepto policies right now.",
@@ -953,15 +950,7 @@ git log --graph --all --oneline --decorate
 
 The Git workflow requirement applies to the repository as a whole; it does not have to be repeated separately for every module.
 
-This is consistent with the Git guide, which says the ChromaDB local vector store should be regenerated rather than committed. :contentReference[oaicite:0]{index=0}
-
 ---
-
-### 5. Add final repository structure
-
-I recommend adding this **after the Docker section and before `Git Workflow`**.
-
-Paste:
 
 ```markdown
 ## Final Repository Structure

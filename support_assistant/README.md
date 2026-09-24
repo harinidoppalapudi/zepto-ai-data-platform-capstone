@@ -19,7 +19,7 @@ The service combines:
 - FastAPI `/ask` endpoint
 - Docker containerization
 
-The required graded baseline works completely offline using `MOCK_LLM` mock mode.
+The required graded baseline runs without an external LLM API by using deterministic `MOCK_LLM` mode. Embeddings are generated locally using `all-MiniLM-L6-v2`, and ChromaDB runs locally.
 
 No LLM API key or LLM-provider network access is required for the required baseline.
 
@@ -27,44 +27,29 @@ No LLM API key or LLM-provider network access is required for the required basel
 
 The Support Assistant answers questions using a fixed Zepto policy corpus.
 
-The pipeline is:
+The complete RAG architecture is:
 
-```text
 Policy Documents
-       |
-       v
+      ↓
 Document Ingestion
-       |
-       v
-Sentence Transformer Embeddings
-       |
-       v
-ChromaDB Vector Collection
-       |
-       v
+      ↓
+Chunking
+      ↓
+Local Embeddings (`all-MiniLM-L6-v2`)
+      ↓
+ChromaDB Vector Store
+      ↓
 User Query
-       |
-       v
-LangGraph Intent Classification
-       |
-       +----------------------+
-       |                      |
-       v                      v
-policy_question        general_question
-       |                      |
-       v                      v
-Retrieve Top 3          Direct Answer
-       |                      |
-       v                      |
-Mock / Real Generation       |
-       |                      |
-       +----------+-----------+
-                  |
-                  v
-        Pydantic Response
-                  |
-                  v
-             FastAPI /ask
+      ↓
+Intent Classification
+      ↓
+Top-3 Semantic Retrieval
+      ↓
+Grounded Generation
+      ↓
+Pydantic Structured Response
+      ↓
+FastAPI `/ask`
 
 The assignment requires the complete RAG flow:
 
@@ -112,7 +97,7 @@ doc_06.txt	Damaged or Missing Items
 doc_07.txt	Gift Cards
 doc_08.txt	Customer Support Hours
 
-The assignment requires these eight documents to be copied exactly into the repository.
+These files are the complete policy corpus used by the application; no additional policy documents are required for the graded baseline.
 
 4. Technologies
 Core Technologies
@@ -210,6 +195,12 @@ all-MiniLM-L6-v2
 
 The assignment requires all eight documents to be embedded and queryable from ChromaDB.
 
+## 7.1 Fresh Clone Requirement
+
+On a fresh clone, run `python build_index.py` before starting the API.
+
+This creates the local `chroma_db/` vector store from the eight policy documents. The generated `chroma_db/` directory is not required to be committed to Git.
+
 8. Step 2 — Start the FastAPI Application
 
 From:
@@ -254,13 +245,12 @@ The assignment requires confidence to be between 0 and 1.
 
 10. LangGraph Architecture
 
-The application uses a LangGraph StateGraph.
+The application uses a LangGraph `StateGraph` with a typed state definition.
 
 The graph contains three required nodes:
-
-classify_intent
-retrieve_and_answer
-direct_answer
+- `classify_intent`
+- `retrieve_and_answer`
+- `direct_answer`
 
 The graph flow is:
 
@@ -336,7 +326,7 @@ Embeds the user query.
 Searches ChromaDB.
 Uses cosine similarity.
 Retrieves the top 3 chunks.
-Uses the most similar chunk for the mock answer.
+The top 3 chunks are returned as retrieval context and source candidates; the deterministic mock generator uses the highest-ranked chunk to construct the answer.
 
 The retrieval flow is:
 
@@ -558,18 +548,8 @@ Run:
 curl -X POST "http://127.0.0.1:8000/ask" \
   -H "Content-Type: application/json" \
   -d '{"query":"What is the delivery policy?"}'
-Actual response
 
-After running the application, paste the actual JSON response here:
-
-{
-  "answer": "PASTE ACTUAL RESPONSE HERE",
-  "sources": [
-    "PASTE ACTUAL SOURCE ID HERE"
-  ],
-  "confidence": 1.0
-}
-
+JSON response
 {
     "answer": "Based on the retrieved context: Zepto delivers grocery and household essentials to serviceable pin codes within 10 to 30 minutes of order confirmation, depending on the customer's delivery zone and current order volume Standard del",
     "sources":[
@@ -577,8 +557,6 @@ After running the application, paste the actual JSON response here:
     ],
     "confidence":1.0
 } 
-
-Do not leave the placeholder text in the final submission.
 
 The assignment specifically requires the raw JSON responses from the example calls to be recorded in the README.
 
@@ -589,19 +567,14 @@ Run:
 curl -X POST "http://127.0.0.1:8000/ask" \
   -H "Content-Type: application/json" \
   -d '{"query":"What is the capital of France?"}'
-Actual response
 
-After running the application, paste the actual JSON response here:
-
+JSON response
 {
   "answer":"I can only answer questions about Zepto policies right now.",
   "sources":[],
   "confidence":1.0
 }
 
-Expected answer text in mock mode:
-
-I can only answer questions about Zepto policies right now.
 20. Docker
 
 The application includes a Dockerfile.
