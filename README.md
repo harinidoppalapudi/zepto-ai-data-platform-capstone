@@ -241,7 +241,7 @@ Pydantic structured output.
 FastAPI /ask endpoint.
 Docker containerization.
 
-The required graded baseline works entirely offline using MOCK_LLM.
+The required graded baseline does not require an external LLM API. In `MOCK_LLM=1` mode, generation is deterministic and local, while embeddings are generated locally using `all-MiniLM-L6-v2`.
 
 No LLM API key or LLM-provider network access is required for the graded mock mode.
 
@@ -298,7 +298,7 @@ Embeddings
       ↓
 ChromaDB collection
 
-The eight documents must be indexed before the API is started on a fresh clone.
+On a fresh clone, run `python build_index.py` before starting FastAPI. This creates the local ChromaDB vector store required for retrieval.
 
 
 
@@ -328,8 +328,6 @@ The build_index.py script uses the PolicyIndexer implementation in
 ingestion.py to load the eight policy documents, chunk them, generate
 local embeddings using all-MiniLM-L6-v2, and store them in ChromaDB.
 
-The ingestion process loads the eight policy documents, chunks them, generates local embeddings using all-MiniLM-L6-v2, and stores them in ChromaDB.
-
 After successful ingestion, start the FastAPI service:
 
 uvicorn main:app --reload
@@ -352,11 +350,11 @@ automatically builds the ChromaDB index.
 The reproducible workflow is:
 
 python build_index.py
-        ↓
+↓
 ChromaDB index created/populated
-        ↓
+↓
 uvicorn main:app --reload
-        ↓
+↓
 POST /ask
 
 This ensures that a fresh clone has a populated vector store before retrieval is attempted.
@@ -950,9 +948,6 @@ git log --graph --all --oneline --decorate
 
 The Git workflow requirement applies to the repository as a whole; it does not have to be repeated separately for every module.
 
----
-
-```markdown
 ## Final Repository Structure
 
 ```text
@@ -962,11 +957,30 @@ zepto-ai-data-platform-capstone/
 ├── requirements.txt
 │
 ├── data_pipeline/
+│   ├── main.py
+│   ├── scraper.py
+│   ├── cleaning.py
+│   ├── database.py
+│   ├── queries.py
+│   ├── books.db
+│   └── README.md
 │
 ├── analytics/
-│   └── titanic.csv
+│   ├── 01_eda.ipynb
+│   ├── 02_modeling.ipynb
+│   ├── titanic.csv
+│   │
+│   ├── models/
+│   │   └── best_pipeline.joblib
+│   │
+│   ├── outputs/
+│   │   ├── figures/
+│   │   └── metrics/
+│   │
+│   └── README.md
 │
 └── support_assistant/
+    │
     ├── docs/
     │   ├── doc_01.txt
     │   ├── doc_02.txt
@@ -984,5 +998,7 @@ zepto-ai-data-platform-capstone/
     ├── build_index.py
     ├── graph.py
     ├── main.py
+    │
     ├── Dockerfile
+    ├── .dockerignore
     └── README.md
